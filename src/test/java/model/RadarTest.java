@@ -96,6 +96,8 @@ public class RadarTest {
     @Test
     public void testScan() {
         Galaxy testGalaxy = new Galaxy("Млечный путь", sun, earth, moon);
+        radar.scan(null);
+        Assert.assertTrue("Ошибка в методе scan (null)", outContent.toString().toLowerCase().contains("объект galaxy null"));
         radar.scan(testGalaxy);
         Assert.assertEquals("Ошибка в методе scan (size)", 2, foundBodies.size());
         Assert.assertTrue("Ошибка в методе scan ", foundBodies.contains(sun));

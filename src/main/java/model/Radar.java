@@ -36,21 +36,24 @@ public class Radar {
     }
 
     public void scan(Galaxy galaxy) {
-        this.currentGalaxy = galaxy;
-        ArrayList<SpaceBody> spaceBodies = galaxy.getSpaceBodies();
-        foundBodies.clear();
-        int capacity = screenCapacity;
-        if (position < spaceBodies.size())
-            for (int i = position; i < spaceBodies.size(); i++) {
-                SpaceBody spaceBody = spaceBodies.get(i);
-                if (spaceBody.getSize() < capacity) foundBodies.add(spaceBody);
-                else {
-                    foundBodies.add(spaceBody);
-                    break;
+        if (galaxy!=null){
+            this.currentGalaxy = galaxy;
+            ArrayList<SpaceBody> spaceBodies = galaxy.getSpaceBodies();
+            foundBodies.clear();
+            int capacity = screenCapacity;
+            if (position < spaceBodies.size())
+                for (int i = position; i < spaceBodies.size(); i++) {
+                    SpaceBody spaceBody = spaceBodies.get(i);
+                    if (spaceBody.getSize() < capacity) foundBodies.add(spaceBody);
+                    else {
+                        foundBodies.add(spaceBody);
+                        break;
+                    }
+                    capacity -= spaceBody.getSize();
                 }
-                capacity -= spaceBody.getSize();
-            }
-        show();
+            show();
+        }else  System.out.println("Объект Galaxy null");
+
     }
 
     public void show() {
