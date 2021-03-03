@@ -22,6 +22,8 @@ public class FunctionTest {
         //>1
         falseTestValues.put(Math.PI / 3, Math.sqrt(3));
         falseTestValues.put(-Math.PI / 3, -Math.sqrt(3));
+        falseTestValues.put(1.326, 4.0);
+        falseTestValues.put(-1.326, -4.0);
     }
 
     @Test
