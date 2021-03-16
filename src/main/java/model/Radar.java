@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-
 public class Radar {
     private final RadarSize size;
     private int screenCapacity;
@@ -10,11 +9,15 @@ public class Radar {
     private final int MAX_SCALE = 5;
     private int position = 0;
     private Galaxy currentGalaxy;
-    private ArrayList<SpaceBody> foundBodies = new ArrayList<>();
+    private final ArrayList<SpaceBody> foundBodies = new ArrayList<>();
 
 
     public RadarSize getSize() {
         return size;
+    }
+
+    public ArrayList<SpaceBody> getFoundBodies() {
+        return foundBodies;
     }
 
     public int getMIN_SCALE() {
