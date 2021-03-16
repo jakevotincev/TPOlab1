@@ -1,7 +1,7 @@
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -11,7 +11,7 @@ public class OpenHashTableTest {
     Field field;
     Object[] items;
 
-    @Before
+    @BeforeEach
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         table = new OpenHashTable();
         field = table.getClass().getDeclaredField("items");
@@ -25,7 +25,7 @@ public class OpenHashTableTest {
         table.put(32);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         table.clear();
     }
@@ -40,47 +40,52 @@ public class OpenHashTableTest {
         int actual6 = list.getLast();
         int actual19 = list.get(1);
         int actual32 = list.getFirst();
-        Assert.assertEquals("Ошибка в методе put", 0, actual0);
-        Assert.assertEquals("Ошибка в методе put", 6, actual6);
-        Assert.assertEquals("Ошибка в методе put", 12, actual12);
-        Assert.assertEquals("Ошибка в методе put", 16, actual16);
-        Assert.assertEquals("Ошибка в методе put (LinkedList)", 19, actual19);
-        Assert.assertEquals("Ошибка в методе put (LinkedList)", 32, actual32);
-        Assert.assertEquals("Ошибка в методе put (size)", 6, size);
+        Assertions.assertEquals(0, actual0, "Ошибка в методе put");
+        Assertions.assertEquals(6, actual6, "Ошибка в методе put");
+        Assertions.assertEquals(12, actual12, "Ошибка в методе put");
+        Assertions.assertEquals(16, actual16, "Ошибка в методе put");
+        Assertions.assertEquals(19, actual19, "Ошибка в методе put (LinkedList)");
+        Assertions.assertEquals(32, actual32, "Ошибка в методе put (LinkedList)");
+        Assertions.assertEquals(6, size, "Ошибка в методе put (size)");
     }
 
     @Test
     public void testGet() {
-        Assert.assertEquals("Ошибка в методе get", 0, (int) table.get(0));
-        Assert.assertEquals("Ошибка в методе get", 6, (int) table.get(6));
-        Assert.assertEquals("Ошибка в методе get", 12, (int) table.get(12));
-        Assert.assertEquals("Ошибка в методе get", 16, (int) table.get(16));
-        Assert.assertEquals("Ошибка в методе get (LinkedList)", 19, (int) table.get(19));
-        Assert.assertEquals("Ошибка в методе get (LinkedList)", 32, (int) table.get(32));
+        Assertions.assertEquals(0, (int) table.get(0), "Ошибка в методе get");
+        Assertions.assertEquals(6, (int) table.get(6), "Ошибка в методе get");
+        Assertions.assertEquals(12, (int) table.get(12), "Ошибка в методе get");
+        Assertions.assertEquals(16, (int) table.get(16), "Ошибка в методе get");
+        Assertions.assertEquals(19, (int) table.get(19), "Ошибка в методе get (LinkedList)");
+        Assertions.assertEquals(32, (int) table.get(32), "Ошибка в методе get (LinkedList)");
         Object actual = table.get(8);
-        Assert.assertNull("Ошибка в методе get (not found)", actual);
+        Assertions.assertNull(actual, "Ошибка в методе get (not found)");
     }
 
     @Test
-    public void testDelete() {
+    public void testDeleteSingleItems() {
         boolean result = table.delete(8);
-        Assert.assertFalse(result);
+        Assertions.assertFalse(result);
         result = table.delete(0);
         int size = table.getSize();
-        Assert.assertEquals("Ошибка в методе delete (size)", 5, size);
-        Assert.assertTrue("Ошибка в методе delete (result)", result);
+        Assertions.assertEquals(5, size, "Ошибка в методе delete (size)");
+        Assertions.assertTrue(result, "Ошибка в методе delete (result)");
         Object actual = items[0];
-        Assert.assertNull("Ошибка в методе delete (not delete item)", actual);
+        Assertions.assertNull(actual, "Ошибка в методе delete (not delete item)");
         result = table.delete(12);
-        Assert.assertTrue("Ошибка в методе delete (result)", result);
+        Assertions.assertTrue(result, "Ошибка в методе delete (result)");
         actual = items[12];
-        Assert.assertNull("Ошибка в методе delete (not delete item)", actual);
+        Assertions.assertNull(actual, "Ошибка в методе delete (not delete item)");
         result = table.delete(16);
-        Assert.assertTrue("Ошибка в методе delete (result)", result);
+        Assertions.assertTrue(result, "Ошибка в методе delete (result)");
         actual = items[3];
-        Assert.assertNull("Ошибка в методе delete (not delete item)", actual);
-        result = table.delete(6);
-        Assert.assertTrue("Ошибка в методе delete (result)", result);
+        Assertions.assertNull(actual, "Ошибка в методе delete (not delete item)");
+    }
+
+
+    @Test
+    public void testDeleteFromList() {
+        boolean result = table.delete(6);
+        Assertions.assertTrue(result, "Ошибка в методе delete (result)");
         LinkedList<Integer> list = (LinkedList<Integer>) items[6];
         result = false;
         for (Integer cur : list) {
@@ -89,9 +94,9 @@ public class OpenHashTableTest {
                 break;
             }
         }
-        Assert.assertFalse("Ошибка в методе delete (LinkedList)", result);
+        Assertions.assertFalse(result, "Ошибка в методе delete (LinkedList)");
         result = table.delete(32);
-        Assert.assertTrue("Ошибка в методе delete (result)", result);
+        Assertions.assertTrue(result, "Ошибка в методе delete (result)");
         list = (LinkedList<Integer>) items[6];
         result = false;
         for (Integer cur : list) {
@@ -100,14 +105,12 @@ public class OpenHashTableTest {
                 break;
             }
         }
-        Assert.assertFalse("Ошибка в методе delete (LinkedList)", result);
+        Assertions.assertFalse(result, "Ошибка в методе delete (LinkedList)");
         result = table.delete(19);
-        Assert.assertTrue("Ошибка в методе delete (result)", result);
-        actual = items[6];
-        Assert.assertNull("Ошибка в методе delete (LinkedList)", actual);
-        size = table.getSize();
-        Assert.assertEquals("Ошибка в методе delete (size)",0, size);
-
-
+        Assertions.assertTrue(result, "Ошибка в методе delete (result)");
+        Object actual = items[6];
+        Assertions.assertNull(actual, "Ошибка в методе delete (LinkedList)");
+        int size = table.getSize();
+        Assertions.assertEquals(3, size, "Ошибка в методе delete (size)");
     }
 }
