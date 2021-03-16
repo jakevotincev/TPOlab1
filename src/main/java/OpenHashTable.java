@@ -69,6 +69,10 @@ public class OpenHashTable {
         return item % INITIAL_SIZE;
     }
 
+    public Object[] getItems() {
+        return items;
+    }
+
     public void clear() {
         items = null;
         size = 0;
