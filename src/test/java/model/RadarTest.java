@@ -18,22 +18,19 @@ import java.util.Arrays;
 public class RadarTest {
     Radar radar;
     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    Field field;
     ArrayList<SpaceBody> foundBodies;
     SpaceBody sun;
     SpaceBody earth;
     SpaceBody moon;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setUp() {
         sun = new SpaceBody("Sun", SpaceBodyType.STAR, Color.YELLOW, 10000);
         earth = new SpaceBody("Earth", SpaceBodyType.PlANET, Color.BLUE, 5000);
         moon = new SpaceBody("Moon", SpaceBodyType.SATELLITE, Color.GRAY, 500);
         radar = new Radar(RadarSize.HUGE);
         System.setOut(new PrintStream(outContent));
-        field = radar.getClass().getDeclaredField("foundBodies");
-        field.setAccessible(true);
-        foundBodies = (ArrayList<SpaceBody>) field.get(radar);
+        foundBodies = radar.getFoundBodies();
     }
 
     @AfterEach
@@ -98,9 +95,9 @@ public class RadarTest {
     public void testScan() {
         Galaxy testGalaxy = new Galaxy("Млечный путь", sun, earth, moon);
         radar.scan(null);
-        Assertions.assertTrue(outContent.toString().toLowerCase().contains("объект galaxy null"),"Ошибка в методе scan (null)");
+        Assertions.assertTrue(outContent.toString().toLowerCase().contains("объект galaxy null"), "Ошибка в методе scan (null)");
         radar.scan(testGalaxy);
-        Assertions.assertEquals( 2, foundBodies.size(), "Ошибка в методе scan (size)");
+        Assertions.assertEquals(2, foundBodies.size(), "Ошибка в методе scan (size)");
         Assertions.assertTrue(foundBodies.contains(sun), "Ошибка в методе scan ");
         Assertions.assertTrue(foundBodies.contains(earth), "Ошибка в методе scan ");
         SpaceBody bigSun = new SpaceBody("Sun", SpaceBodyType.STAR, Color.YELLOW, 20000);
