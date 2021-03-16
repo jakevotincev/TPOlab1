@@ -1,9 +1,10 @@
 package model;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +24,7 @@ public class RadarTest {
     SpaceBody earth;
     SpaceBody moon;
 
-    @Before
+    @BeforeEach
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
         sun = new SpaceBody("Sun", SpaceBodyType.STAR, Color.YELLOW, 10000);
         earth = new SpaceBody("Earth", SpaceBodyType.PlANET, Color.BLUE, 5000);
@@ -35,7 +36,7 @@ public class RadarTest {
         foundBodies = (ArrayList<SpaceBody>) field.get(radar);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setOut(System.out);
     }
@@ -51,11 +52,11 @@ public class RadarTest {
             method.invoke(radar);
             int actual = (int) field.get(radar);
             switch (size) {
-                case VERY_SMALL -> Assert.assertEquals("Ошибка в методе calculateCapacity", 3000, actual);
-                case SMALL -> Assert.assertEquals("Ошибка в методе calculateCapacity", 6000, actual);
-                case MIDDLE -> Assert.assertEquals("Ошибка в методе calculateCapacity", 9000, actual);
-                case BIG -> Assert.assertEquals("Ошибка в методе calculateCapacity", 12000, actual);
-                case HUGE -> Assert.assertEquals("Ошибка в методе calculateCapacity", 15000, actual);
+                case VERY_SMALL -> Assertions.assertEquals(3000, actual, "Ошибка в методе calculateCapacity");
+                case SMALL -> Assertions.assertEquals(6000, actual, "Ошибка в методе calculateCapacity");
+                case MIDDLE -> Assertions.assertEquals(9000, actual, "Ошибка в методе calculateCapacity");
+                case BIG -> Assertions.assertEquals(12000, actual, "Ошибка в методе calculateCapacity");
+                case HUGE -> Assertions.assertEquals(15000, actual, "Ошибка в методе calculateCapacity");
             }
 
         }
@@ -65,19 +66,19 @@ public class RadarTest {
     @Test
     public void testZoom() {
         int actualScale = radar.zoom(1);
-        Assert.assertEquals("Ошибка в методе zoom", 2, actualScale);
+        Assertions.assertEquals(2, actualScale, "Ошибка в методе zoom");
         actualScale = radar.zoom(-1);
-        Assert.assertEquals("Ошибка в методе zoom", 3, actualScale);
+        Assertions.assertEquals(3, actualScale, "Ошибка в методе zoom");
         actualScale = radar.zoom(-10);
-        Assert.assertEquals("Ошибка в методе zoom", 5, actualScale);
+        Assertions.assertEquals(5, actualScale, "Ошибка в методе zoom");
         actualScale = radar.zoom(10);
-        Assert.assertEquals("Ошибка в методе zoom", 1, actualScale);
+        Assertions.assertEquals(1, actualScale, "Ошибка в методе zoom");
     }
 
     @Test
     public void testShow() throws NoSuchFieldException, IllegalAccessException {
         radar.show();
-        Assert.assertTrue("Ошибка в методе show (no objects)", outContent.toString().contains("Объекты не найдены"));
+        Assertions.assertTrue(outContent.toString().contains("Объекты не найдены"), "Ошибка в методе show (no objects)");
         Field field = radar.getClass().getDeclaredField("foundBodies");
         field.setAccessible(true);
         ArrayList<SpaceBody> foundBodies = new ArrayList<>(Arrays.asList(new SpaceBody("Sun", SpaceBodyType.STAR, Color.YELLOW, 1000),
@@ -85,48 +86,48 @@ public class RadarTest {
         field.set(radar, foundBodies);
         outContent.reset();
         radar.show();
-        Assert.assertTrue("Ошибка в методе show ", outContent.toString().toLowerCase().contains("sun"));
-        Assert.assertTrue("Ошибка в методе show ", outContent.toString().toLowerCase().contains("earth"));
-        Assert.assertTrue("Ошибка в методе show ", outContent.toString().toLowerCase().contains("star"));
-        Assert.assertTrue("Ошибка в методе show ", outContent.toString().toLowerCase().toLowerCase().contains("planet"));
-        Assert.assertTrue("Ошибка в методе show ", outContent.toString().contains("1000"));
-        Assert.assertTrue("Ошибка в методе show ", outContent.toString().contains("200"));
+        Assertions.assertTrue(outContent.toString().toLowerCase().contains("sun"), "Ошибка в методе show ");
+        Assertions.assertTrue(outContent.toString().toLowerCase().contains("earth"), "Ошибка в методе show ");
+        Assertions.assertTrue(outContent.toString().toLowerCase().contains("star"), "Ошибка в методе show ");
+        Assertions.assertTrue(outContent.toString().toLowerCase().toLowerCase().contains("planet"), "Ошибка в методе show ");
+        Assertions.assertTrue(outContent.toString().contains("1000"), "Ошибка в методе show ");
+        Assertions.assertTrue(outContent.toString().contains("200"), "Ошибка в методе show ");
     }
 
     @Test
     public void testScan() {
         Galaxy testGalaxy = new Galaxy("Млечный путь", sun, earth, moon);
         radar.scan(null);
-        Assert.assertTrue("Ошибка в методе scan (null)", outContent.toString().toLowerCase().contains("объект galaxy null"));
+        Assertions.assertTrue(outContent.toString().toLowerCase().contains("объект galaxy null"),"Ошибка в методе scan (null)");
         radar.scan(testGalaxy);
-        Assert.assertEquals("Ошибка в методе scan (size)", 2, foundBodies.size());
-        Assert.assertTrue("Ошибка в методе scan ", foundBodies.contains(sun));
-        Assert.assertTrue("Ошибка в методе scan ", foundBodies.contains(earth));
+        Assertions.assertEquals( 2, foundBodies.size(), "Ошибка в методе scan (size)");
+        Assertions.assertTrue(foundBodies.contains(sun), "Ошибка в методе scan ");
+        Assertions.assertTrue(foundBodies.contains(earth), "Ошибка в методе scan ");
         SpaceBody bigSun = new SpaceBody("Sun", SpaceBodyType.STAR, Color.YELLOW, 20000);
         Galaxy testGalaxy1 = new Galaxy("Млечный путь", bigSun, moon);
         radar.scan(testGalaxy1);
-        Assert.assertEquals("Ошибка в методе scan (size)", 1, foundBodies.size());
-        Assert.assertTrue("Ошибка в методе scan ", foundBodies.contains(bigSun));
+        Assertions.assertEquals(1, foundBodies.size(), "Ошибка в методе scan (size)");
+        Assertions.assertTrue(foundBodies.contains(bigSun), "Ошибка в методе scan ");
         radar.zoom(-10);
         radar.scan(testGalaxy1);
-        Assert.assertEquals("Ошибка в методе scan (size)", 2, foundBodies.size());
+        Assertions.assertEquals(2, foundBodies.size(), "Ошибка в методе scan (size)");
     }
 
     @Test
     public void testScroll() {
-        Assert.assertEquals("Ошибка в методе scroll (не вызван метод scan)", 0, radar.scroll(3));
+        Assertions.assertEquals(0, radar.scroll(3), "Ошибка в методе scroll (не вызван метод scan)");
         Galaxy testGalaxy = new Galaxy("Млечный путь", sun, earth, moon);
         radar.scan(testGalaxy);
         radar.scroll(1);
-        Assert.assertEquals("Ошибка в методе scroll (size)", 2, foundBodies.size());
-        Assert.assertTrue("Ошибка в методе scroll ", foundBodies.contains(earth));
-        Assert.assertTrue("Ошибка в методе scroll ", foundBodies.contains(moon));
+        Assertions.assertEquals(2, foundBodies.size(), "Ошибка в методе scroll (size)");
+        Assertions.assertTrue(foundBodies.contains(earth), "Ошибка в методе scroll ");
+        Assertions.assertTrue(foundBodies.contains(moon), "Ошибка в методе scroll ");
         radar.scroll(-10);
-        Assert.assertEquals("Ошибка в методе scroll (size)", 2, foundBodies.size());
-        Assert.assertTrue("Ошибка в методе scroll ", foundBodies.contains(earth));
-        Assert.assertTrue("Ошибка в методе scroll ", foundBodies.contains(sun));
+        Assertions.assertEquals(2, foundBodies.size(), "Ошибка в методе scroll (size)");
+        Assertions.assertTrue(foundBodies.contains(earth), "Ошибка в методе scroll ");
+        Assertions.assertTrue(foundBodies.contains(sun), "Ошибка в методе scroll ");
         radar.scroll(10);
-        Assert.assertEquals("Ошибка в методе scroll (size)", 1, foundBodies.size());
-        Assert.assertTrue("Ошибка в методе scroll ", foundBodies.contains(moon));
+        Assertions.assertEquals(1, foundBodies.size(), "Ошибка в методе scroll (size)");
+        Assertions.assertTrue(foundBodies.contains(moon), "Ошибка в методе scroll ");
     }
 }
